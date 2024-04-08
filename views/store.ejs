@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gstore</title>
+    <link rel="stylesheet" href="main1.css">
+</head>
+<body>
+    <div>
+        <form action="/gocart" method="post">
+            <input type="hidden" name="idd2" value="<%= pinfo.id %>">
+            <button type="submit">Go to Cart</button>
+        </form>
+    </div>
+    <div class="container">
+        <% info.forEach(item => { %>
+            <div class="cell">
+                <form action="/addtocart" method="post">
+                    <input type="hidden" name="idd" value="<%= pinfo.id %>">
+                    <input type="hidden" name="name" value="<%= name %>">
+                    <input type="hidden" name="password" value="<%= password %>">
+                    <input type="hidden" name="itemid" value="<%= item.id %>">
+                    <img src="images/images.png" alt="hello">
+                    <div class="txt">
+                        <p>Name:<%= item.name %></p>
+                        <p>Type:<%= item.type %></p>
+                        <p>Quantity:<%= item.quantity %></p>
+                        <p>Price:<%= item.price %><p>
+                        <% ex.forEach(idd => { %>
+                        <p><%  idd.pr_id %></p>
+                        <% if(idd.pr_id == item.id){ %>
+                            <p>Item already in cart</p>
+                        <% } %>
+                        <% }); %>
+                    </div>
+                    <button type="submit">Add to cart</button>
+                </form>
+            </div>
+        <% }); %>
+    </div>
+</body>
+</html>

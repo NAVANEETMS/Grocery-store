@@ -1,0 +1,51 @@
+@media screen and (min-width: 1024px) {
+    html {
+        font-size: 16px;
+    }
+    .cell {
+        width: calc(25% - 4rem);
+    }
+}
+
+@media screen and (max-width: 1023px) and (min-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+    .cell {
+        width: calc(33.3334% - 4rem);
+    }
+}
+
+@media screen and (max-width: 767px) {
+    html {
+        font-size: 12px;
+    }
+    .cell {
+        width: calc(50% - 4rem);
+    }
+}
+
+.container {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.cell {
+    height: auto;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    position: relative; /* Ensure relative positioning for the image container */
+    overflow: hidden; /* Hide overflow to contain the image */
+}
+
+.cell>img {
+    width: 100%; /* Set the image width to 100% of the container */
+    height: auto; /* Allow the height to adjust automatically to maintain aspect ratio */
+    display: block; /* Make the image behave as a block element */
+}

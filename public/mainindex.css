@@ -1,0 +1,44 @@
+/* Reset default browser styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Style for the h1 element */
+h1 {
+        font-family: "Arial", sans-serif; /* Choose a suitable font family */
+        font-size: 20px; /* Adjust the font size as desired */
+        color: #333; /* Set the color of the text */
+        text-align: center; /* Center-align the text */
+        margin-top: 50px; /* Add some space above the heading */
+        margin-bottom: 20px; /* Add some space below the heading */
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Add a subtle text shadow */
+}
+
+/* Style for the buttons */
+button {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 18px;
+    text-align: center;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Style for the buttons on hover */
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 600px) {
+    button {
+        width: 100%;
+    }
+}

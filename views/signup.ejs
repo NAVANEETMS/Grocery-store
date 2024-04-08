@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="mainsignup.css">
+</head>
+<body>
+    <form action="/signupsub" method="post">
+        <input type="text" name="username" placeholder="username">
+        <input type="text" name="password" placeholder="password">
+        <input type="text" name="address" placeholder="address" size="50px">
+        <input type="text" name="pincode" placeholder="pincode">
+        <input type="text" name="phoneno" placeholder="phoneno">
+        <button type="submit">submit</button>
+    </form>
+    <% if (locals.error) { %>
+        <p><%= error %></p>
+    <% } %>
+</body>
+</html>

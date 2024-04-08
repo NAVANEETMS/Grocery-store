@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="stylesheet" href="main1.css">
+</head>
+<body>
+    <div>
+        <form action="rtostore" method="post">
+            <input type="hidden" name="cid" value="<%= id2 %>">  
+            <button type="submit">Go to store</button>
+        </form>
+    </div>
+    <% if(locals.data ) { %>
+        <% if(locals.id2) { %>
+            <div class="container">
+                <% data.forEach(data => { %>
+                    <div class="cell">
+                        <form action="/removetocart" method="post">
+                            <input type="hidden" name="cid" value="<%= id2 %>">
+                            <input type="hidden" name="pid" value="<%= data.id %>">
+                            <img src="images/images.png" alt="hello">
+                            <div class="txt">
+                                <p>Name:<%= data.name %></p>
+                                <p>Type:<%= data.type %></p>
+                                <p>Quantity:<%= data.quantity %></p>
+                                <p>Price:<%= data.price %><p>
+                            </div>
+                            <button type="submit">Remove from cart</button>
+                        </form>
+                    </div>
+                <% }); %>
+            </div>
+        <%}%> 
+    <%}%>
+    <% if(locals.msg) { %>
+        <p>No item in cart</p>
+    <%}%>
+    <div>
+        <form action="/buy" method="post">
+            <input type="hidden" name="cid2" value="<%= id2 %>">  
+            <button type="submit">buy</button>
+        </form>
+    </div>
+</body>
+</html>

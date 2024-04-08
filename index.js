@@ -1,0 +1,154 @@
+import express from "express";
+import bodyParser from "body-parser";
+import pg from "pg";
+
+const app=express();
+const port=3000;
+
+
+app.use(bodyParser.urlencoded({ extended:true }));
+app.use(express.static("public"));
+
+const db = new pg.Client({
+    user:"postgres",
+    host:"localhost",
+    database:"gstore",
+    password:"navaneet",
+    port:5432,
+});
+db.connect();
+
+
+app.get("/", async(req,res) => {
+    res.render("index.ejs");
+});
+
+app.get("/login", async(req,res) => {
+    res.render("login.ejs");
+});
+
+app.get("/signup", async(req,res) => {
+    res.render("signup.ejs");
+});
+
+app.post("/signupsub", async(req,res) => {
+        const us = req.body.username;
+        const ps = req.body.password;
+        const ad = req.body.address;
+        const pn = req.body.pincode;
+        const ph = req.body.phoneno;
+        
+        const result = await db.query("SELECT username FROM info_t  WHERE username=$1",
+        [us]
+        );
+        if(result.rows.length==0){
+            try{
+                await db.query("INSERT INTO info_t(username,password,address,pincode,phone_no) VALUES($1,$2,$3,$4,$5)",
+            [us,ps,ad,pn,ph]
+            );
+            res.redirect("/");
+            } catch(err){
+                console.log(err);
+                res.redirect("/signupsub");
+            }
+            } else{
+            res.render("signup.ejs",{error:"username already exits"});
+        }
+});
+app.post("/loginsub", async(req,res) => {
+    const name = req.body.name;
+    const password = req.body.password;
+    const result1 = await db.query("SELECT id FROM info_t WHERE username=$1 AND password=$2",
+    [name,password]
+    );
+    if(result1.rows.length==1){
+        const pr = result1.rows[0];
+        const result3 = await db.query("SELECT pr_id FROM cart1 WHERE cu_id = $1", [pr.id]);
+        const result2 = await db.query("SELECT * FROM product");
+        const resp = result2.rows;
+        res.render("store.ejs", {info : resp , pinfo : result1.rows[0] , name : name , password : password, ex: result3.rows});
+    }else{
+        res.render("login.ejs",{error : "Invalid Credetails"});
+    }
+});
+
+app.post("/addtocart", async (req,res) => {
+    const idp = req.body.idd;
+    const password = req.body.password;
+    const name = req.body.name;
+    const itemid = req.body.itemid;
+    try
+    {await db.query("INSERT INTO cart1(pr_id,cu_id) VALUES($1,$2)",
+    [itemid,idp]
+    );
+    } catch(err){
+       console.log("Item already exists")
+    }
+    const result1 = await db.query("SELECT id FROM info_t WHERE username=$1 AND password=$2",
+    [name,password]
+    );
+    if(result1.rows.length==1){
+        const pr = result1.rows[0];
+        const result3 = await db.query("SELECT pr_id FROM cart1 WHERE cu_id = $1",[pr.id]);
+        const result2 = await db.query("SELECT * FROM product");
+        const resp = result2.rows;
+        res.render("store.ejs", {info : resp , pinfo : result1.rows[0] , name : name , password : password,ex: result3.rows });
+    }else{
+        res.render("login.ejs",{error : "Invalid Credetails"});
+    }
+});
+
+app.post("/gocart", async (req,res) => {
+    const id1 = req.body.idd2;
+    const result4 = await db.query("SELECT pr_id FROM cart1 WHERE cu_id = $1",[id1]);
+    const len =result4.rows
+    if(len.length == 0){
+        res.render("cart.ejs",{ msg : "No item in cart", id2 : id1 }); 
+    } else{
+        let arr = [];
+        result4.rows.forEach( id => {
+        arr = arr.concat(id.pr_id);
+        });
+        const ids = arr.join(',');
+        const result5 = await db.query(`SELECT * FROM PRODUCT WHERE id IN (${ids})`);
+        res.render("cart.ejs",{ data : result5.rows , id2 : id1 });
+    }
+    
+});
+
+app.post("/removetocart", async(req,res) => {
+    const result6 = req.body.cid;
+    const result7 = req.body.pid;
+    await db.query("DELETE FROM cart1 WHERE pr_id = $1 AND cu_id = $2",[result7,result6]);
+    const result4 = await db.query("SELECT pr_id FROM cart1 WHERE cu_id = $1",[result6]);
+    const len =result4.rows
+    if( len.length == 0 ){
+        res.render("cart.ejs",{ msg : "No item in cart" , id2 : result6});
+    } else {
+        let arr = [];
+    result4.rows.forEach( id => {
+        arr = arr.concat(id.pr_id);
+    });
+    const ids = arr.join(',');
+    const result5 = await db.query(`SELECT * FROM PRODUCT WHERE id IN (${ids})`);
+    res.render("cart.ejs",{ data : result5.rows , id2 : result6 });
+    }
+    
+});
+
+app.post("/rtostore", async(req,res) => {
+    const pr = req.body.cid;
+    const result = await db.query("SELECT * FROM info_t WHERE id = $1",[pr]);
+    const pr1 = result.rows[0];
+    const result3 = await db.query("SELECT pr_id FROM cart1 WHERE cu_id = $1",[pr]);
+    const result2 = await db.query("SELECT * FROM product");
+    const resp = result2.rows;
+    const ar ={
+        id : pr
+    }
+    res.render("store.ejs", {info : resp , pinfo : ar , name : pr1.username , password : pr1.password,ex: result3.rows });
+});
+
+app.listen(port, () => {
+    console.log(`Server is listening on port ${port}`);
+});
