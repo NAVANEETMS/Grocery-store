@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
+import nodemailer from 'nodemailer';
 
 const app=express();
 const port=3000;
@@ -147,6 +148,42 @@ app.post("/rtostore", async(req,res) => {
         id : pr
     }
     res.render("store.ejs", {info : resp , pinfo : ar , name : pr1.username , password : pr1.password,ex: result3.rows });
+});
+
+app.post("/buy", async(req,res) => {
+    const idd = req.body.cid2;
+    const result = await db.query("SELECT * FROM info_t WHERE id = $1",[idd]);
+    const result1 = await db.query("SELECT * FROM cart1 WHERE cu_id = $1",[idd]);
+    const result2 = JSON.stringify(result.rows);
+    const result3 = JSON.stringify(result1.rows);
+    try {
+        // Create a transporter object using SMTP transport
+        const transporter = nodemailer.createTransport({
+            service: 'Gmail',
+            auth: {
+                user: 'navaneetsekar@gmail.com', // Your email address
+                pass: 'ryng bxgy lesk swtu' // Your app password
+            }
+        });
+
+        // Email content
+        const mailOptions = {
+            from: 'navaneetsekar@gmail.com',
+            to: 'navaneetms1404@gmail.com', // Recipient's email address
+            subject: 'Order from the customer',
+            text: "Informstion about the customer" +result2 +"Information about the product id"+result3
+        };
+
+        // Send email
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent:', info.response);
+
+        res.status(200).send('Order placed successfully you will get the delery go back and refresh the cart your cart will be empty');
+        await db.query("DELETE FROM cart1 WHERE cu_id=$1",[idd]);
+    } catch (error) {
+        console.error('Error occurred:', error);
+        res.status(500).send('Error sending email');
+    }
 });
 
 app.listen(port, () => {
