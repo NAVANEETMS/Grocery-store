@@ -42,19 +42,24 @@ app.post("/signupsub", async(req,res) => {
         const result = await db.query("SELECT username FROM info_t  WHERE username=$1",
         [us]
         );
-        if(result.rows.length==0){
-            try{
-                await db.query("INSERT INTO info_t(username,password,address,pincode,phone_no) VALUES($1,$2,$3,$4,$5)",
-            [us,ps,ad,pn,ph]
-            );
-            res.redirect("/");
-            } catch(err){
-                console.log(err);
-                res.redirect("/signupsub");
+        if(us ==0 || ps ==0 || ad==0 || pn==0 || ph==0 ){
+            res.render("signup.ejs",{error:"Enter all and valid information"});
+        } else{
+            if(result.rows.length==0){
+                try{
+                    await db.query("INSERT INTO info_t(username,password,address,pincode,phone_no) VALUES($1,$2,$3,$4,$5)",
+                [us,ps,ad,pn,ph]
+                );
+                res.redirect("/");
+                } catch(err){
+                    res.send("Enter all the information ! Go back");
+                    console.log(err);
+                    res.redirect("/signupsub");
+                }
+                } else{
+                res.render("signup.ejs",{error:"username already exits"});
             }
-            } else{
-            res.render("signup.ejs",{error:"username already exits"});
-        }
+        } 
 });
 app.post("/loginsub", async(req,res) => {
     const name = req.body.name;
@@ -162,14 +167,14 @@ app.post("/buy", async(req,res) => {
             service: 'Gmail',
             auth: {
                 user: 'navaneetsekar@gmail.com', // Your email address
-                pass: '****' // Your app password
+                pass: 'ryng bxgy lesk swtu' // Your app password
             }
         });
 
         // Email content
         const mailOptions = {
             from: 'navaneetsekar@gmail.com',
-            to: 'navaneetamrita@gmail.com', // Recipient's email address
+            to: 'navaneetms1404@gmail.com', // Recipient's email address
             subject: 'Order from the customer',
             text: "Informstion about the customer" +result2 +"Information about the product id"+result3
         };
