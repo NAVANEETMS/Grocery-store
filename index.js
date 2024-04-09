@@ -162,14 +162,14 @@ app.post("/buy", async(req,res) => {
             service: 'Gmail',
             auth: {
                 user: 'navaneetsekar@gmail.com', // Your email address
-                pass: 'ryng bxgy lesk swtu' // Your app password
+                pass: '****' // Your app password
             }
         });
 
         // Email content
         const mailOptions = {
             from: 'navaneetsekar@gmail.com',
-            to: 'navaneetms1404@gmail.com', // Recipient's email address
+            to: 'navaneetamrita@gmail.com', // Recipient's email address
             subject: 'Order from the customer',
             text: "Informstion about the customer" +result2 +"Information about the product id"+result3
         };
